@@ -1,15 +1,29 @@
 'use client'
+import { Item } from '@/models/item'
 import { PropsWithId } from '@/types'
+import serverFetch, { getErrorMessage } from '@/utils/serverFetch'
 import { Button } from 'flowbite-react'
 import Link from 'next/link'
-import React from 'react'
-import ItemDetails from './ItemDetails'
-import { Item } from '@/models/item'
-import useDataFetch from '@/hooks/dataFetch'
+import { useEffect, useState } from 'react'
 import Loader from '../Loader'
+import ItemDetails from './ItemDetails'
 
 export default function ItemDetailsPage({ id }: PropsWithId) {
-  const { data, isLoading } = useDataFetch<Item>(`/items/${id}`)
+  const [data, setData] = useState<Item | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    (async () => {
+      try {
+        const {data} = await serverFetch<Item>(`/items/${id}`);
+        setData(data);
+        setIsLoading(false);
+      } catch (error) {
+        alert(getErrorMessage(error));
+      }
+
+    })()
+  }, [])
 
   return (
     <Loader loading={isLoading}>

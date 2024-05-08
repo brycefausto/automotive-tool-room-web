@@ -1,7 +1,7 @@
 import { BorrowTransactionDTO, BorrowTransactionStatus } from '@/models/transaction'
 import { useAppSelector } from '@/store'
 import { getAppUser } from '@/store/reducers/user'
-import serverFetch from '@/utils/serverFetch'
+import serverFetch, { getErrorMessage } from '@/utils/serverFetch'
 import { Button, Table } from 'flowbite-react'
 import React from 'react'
 import { FaCalendarCheck, FaCheckCircle } from "react-icons/fa"
@@ -41,7 +41,7 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
             try {
                 await serverFetch.put(`/transactions/approve/${transaction._id}`)
             } catch (error: any) {
-                alert("Error: " + error.message);
+                alert(getErrorMessage(error));
             }
         }
     }
@@ -52,7 +52,7 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
                 await serverFetch.delete(`/transactions/${transaction._id}`)
                 onSetPage(1)
             } catch (error: any) {
-                alert("Error: " + error.message);
+                alert(getErrorMessage(error));
             }
         })
     }

@@ -1,15 +1,31 @@
 'use client';
-import useDataFetch from "@/hooks/dataFetch";
 import { Item } from "@/models/item";
 import { PropsWithId } from "@/types";
+import serverFetch from "@/utils/serverFetch";
 import { Button } from "flowbite-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Loader from "../Loader";
 import EditItemForm from "./EditItemForm";
 
 export default function ItemEditPage({ id }: PropsWithId) {
   const router = useRouter()
-  const { data, isLoading, error } = useDataFetch(`/items/${id}`)
+  const [data, setData] = useState<Item | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<any>();
+  
+  useEffect(() => {
+    (async () => {
+      try {
+        const {data} = await serverFetch<Item>(`/items/${id}`);
+        setData(data);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error)
+      }
+
+    })()
+  }, [])
 
   return (
     <Loader loading={isLoading} error={error}>
