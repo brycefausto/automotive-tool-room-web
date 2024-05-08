@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container pt-2">
+    <div class="row">
+      <div class="col">
+        <div class="p-3">
+          <h1>Transaction Report</h1>
+        </div>
+      </div>
+      <div class="col">
+        <div class="p-3 border bg-light">
+          <p>Date: {d.date}</p>
+        </div>
+      </div>
+    </div>
+    <div class="mx-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">DATE</th>
+            <th scope="col">BORROWER INFO</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">TOTAL</th>
+            <th scope="col">APPROVED</th>
+            <th scope="col">RETURNED</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{d.rows[i].date}</td>
+            <td>
+              <div>
+                <div class="text-wrap">{d.rows[i].borrower}</div>
+                <div class="text-wrap"><strong>Section:</strong> <span>{d.rows[i].section}</span></div>
+                <div class="text-wrap"><strong>Subject:</strong> <span>{d.rows[i].subject}</span></div>
+              </div>
+            </td>
+            <td>{d.rows[i].status}</td>
+            <td>{d.rows[i].total}</td>
+            <td>
+              <div>
+                <div class="text-wrap"><strong>At:</strong> <span>{d.rows[i].borrowedAtString}</span></div>
+                <div class="text-wrap"><strong>By:</strong> <span>{d.rows[i].approveUser}</span></div>
+              </div>
+            </td>
+            <td>
+              <div>
+                <div class="text-wrap"><strong>At:</strong> <span>{d.rows[i].returnedAtString}</span></div>
+                <div class="text-wrap"><strong>By:</strong> <span>{d.rows[i].returnUser}</span></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="9">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">ITEM NAME</th>
+                    <th scope="col">SIZE</th>
+                    <th scope="col">QUANTITY</th>
+                    <th scope="col">FILL STATUS</th>
+                    <th scope="col">REMARKS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{d.rows[i].items[i].item}</td>
+                    <td>{d.rows[i].items[i].size}</td>
+                    <td>{d.rows[i].items[i].quantity}</td>
+                    <td>{d.rows[i].items[i].fillStatus}</td>
+                    <td>{d.rows[i].items[i].remarks}</td>
+                  </tr>
+                  <tr>
+                    <td>{d.rows[i].items[i+1].item}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>{d.rows[i+1].date}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><span class="fw-bold">Total:</span></td>
+            <td></td>
+            <td></td>
+            <td><span class="fw-bold">{d.total}</span></td>
+            <td><span class="fw-bold">Total Borrowed:<br>{d.totalBorrowed}</span></td>
+            <td><span class="fw-bold">Total Returned:<br>{d.totalReturned}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
