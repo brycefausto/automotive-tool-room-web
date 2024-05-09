@@ -85,17 +85,14 @@ export default function TransactionList() {
     try {
       // const { startTimestamp, endTimestamp } = getTimestampsFromDateRange();
       // const timestampParamString = (startTimestamp && endTimestamp) ? `&startTimestamp=${encodeURIComponent(startTimestamp)}&endTimestamp=${encodeURIComponent(endTimestamp)}` : ''
-      let url = '/transactions?limit=500'
+      let url = '/transactions/generateReport'
 
       if (Object.keys(queryParams).length > 0) {
         const urlParams = convertToUrlParams(queryParams)
         
         url += `?${urlParams}`
       }
-      const { data } = await serverFetch.get(url)
-      const transactions = data.docs.map(toTransactionDto)
-      const transactionReportData = constructReportData(transactions)
-      await axios.post("/api/transactions/reports/generate", transactionReportData)
+      await serverFetch.post(url)
       const reportDate = DateTime.now().toFormat('MMM-d-yyyy')
       window.open(`/transactions/preview?date=${reportDate}`, '_blank', 'noopener,noreferrer')
     } catch (error: any) {

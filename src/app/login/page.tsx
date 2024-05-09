@@ -9,7 +9,7 @@ export default function Login() {
       </div>
       <div className='p-5'>
         <div className='flex flex-row'>
-          <Image src='/Automotive Logo.png' alt='' />
+          <Image src='/Automotive Logo.png' alt='' width={200} height={200} />
           <div className='flex ml-5 w-[522px] items-center'>
             <div className='font-bold text-2xl'>
               Automotive Tool Room Management
