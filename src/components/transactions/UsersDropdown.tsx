@@ -22,7 +22,7 @@ export default function UsersDropdown({ id, value, onChange }: UsersDropdownProp
   const [optionValue, setOptionValue] = useState<UserSelectOption | null>(defaultValue)
   const fetchData = async (query: string) => {
     try {
-      const { data } = await serverFetch.get<AppUser[]>('/users/search?q=' + query + '&userFilter=studentGuest')
+      const { data } = await serverFetch.get<AppUser[]>('/users/search?q=' + query + '&userFilter=nonAdmin')
 
       return data.map(it => ({ label: it.name, value: it._id, user: it }))
     } catch (error: any) {
