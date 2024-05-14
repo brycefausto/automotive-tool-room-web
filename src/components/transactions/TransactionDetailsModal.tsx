@@ -1,4 +1,5 @@
-import { BorrowTransactionDTO } from '@/models/transaction'
+import { BorrowTransaction } from '@/models/transaction'
+import { UserRole } from '@/models/user'
 import { Modal } from 'flowbite-react'
 import React from 'react'
 
@@ -6,7 +7,7 @@ export interface TransactionDetailsModalProps {
   show: boolean
   setShow: (show: boolean) => void
   onClose: () => void
-  transaction: BorrowTransactionDTO
+  transaction: BorrowTransaction
 }
 
 export default function TransactionDetailsModal({ show, setShow, onClose, transaction }: TransactionDetailsModalProps) {
@@ -14,6 +15,8 @@ export default function TransactionDetailsModal({ show, setShow, onClose, transa
     setShow(false)
     onClose()
   }
+
+  const isStudent = transaction.user?.role == UserRole.STUDENT;
 
   return (
     <Modal show={show} onClose={handleClose}>
@@ -25,8 +28,13 @@ export default function TransactionDetailsModal({ show, setShow, onClose, transa
           <div>
             <p><span className="font-bold">Date:</span> {transaction.borrowedAtString || transaction.createdAtString}</p>
             <p><span className="font-bold">Borrower:</span> {transaction.user.name}</p>
-            <p><span className="font-bold">Section:</span> {transaction.user.section?.name || ''}</p>
-            <p><span className="font-bold">Subject:</span> {transaction.subject?.name || ''}</p>
+            <p><span className="font-bold">Department:</span> {transaction.department?.name || ''}</p>
+            {isStudent && (
+              <>
+                <p><span className="font-bold">Section:</span> {transaction.user.section?.name || ''}</p>
+                <p><span className="font-bold">Subject:</span> {transaction.subject?.name || ''}</p>
+              </>
+            )}
             <p><span className="font-bold">Professor:</span> {transaction.subject?.professor || ''}</p>
             <p><span className="font-bold">Group No:</span> {transaction.groupNo}</p>
             <p><span className="font-bold">Members:</span></p>

@@ -1,4 +1,4 @@
-import { BorrowTransactionDTO, BorrowTransactionStatus } from '@/models/transaction'
+import { BorrowTransaction, BorrowTransactionStatus } from '@/models/transaction'
 import { useAppSelector } from '@/store'
 import { getAppUser } from '@/store/reducers/user'
 import serverFetch, { getErrorMessage } from '@/utils/serverFetch'
@@ -12,10 +12,10 @@ import { useAlertModal } from '@/providers/AlertModalProvider'
 import EditButton from '../buttons/EditButton'
 
 export interface TransactionListItemProps {
-    transaction: BorrowTransactionDTO
-    onClickDetails: (transaction: BorrowTransactionDTO) => void | Promise<void>
-    onClickEdit: (transaction: BorrowTransactionDTO) => void | Promise<void>
-    onClickReturn: (transaction: BorrowTransactionDTO) => void
+    transaction: BorrowTransaction
+    onClickDetails: (transaction: BorrowTransaction) => void | Promise<void>
+    onClickEdit: (transaction: BorrowTransaction) => void | Promise<void>
+    onClickReturn: (transaction: BorrowTransaction) => void
     onSetPage: (page: number) => void
 }
 

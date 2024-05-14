@@ -3,6 +3,7 @@ import { FaRegListAlt } from "react-icons/fa";
 import { HiUser } from 'react-icons/hi';
 import { HiListBullet } from "react-icons/hi2";
 import { MdSubject } from "react-icons/md";
+import { RiOrganizationChart } from "react-icons/ri";
 import { SiGoogleclassroom } from "react-icons/si";
 import LinkButton from "./buttons/LinkButton";
 import ItemBorrowCountChart from "./charts/ItemBorrowCountChart";
@@ -16,6 +17,7 @@ export default function HomeComponent() {
       <div className="flex flex-col gap-5 min-w-[300px]">
         <LinkButton href="/items"><HiListBullet className="mr-2" size={24} />Items</LinkButton>
         <LinkButton href="/users"><HiUser className="mr-2" size={24} />Users</LinkButton>
+        <LinkButton href="/departments"><RiOrganizationChart className="mr-2" size={24} />Departments</LinkButton>
         <LinkButton href="/sections"><SiGoogleclassroom className="mr-2" size={24} />Sections</LinkButton>
         <LinkButton href="/subjects"><MdSubject className="mr-2" size={24} />Subjects</LinkButton>
         <LinkButton href="/transactions"><FaRegListAlt className="mr-2" size={24} />Transactions</LinkButton>

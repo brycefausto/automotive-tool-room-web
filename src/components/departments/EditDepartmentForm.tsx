@@ -1,15 +1,15 @@
 'use client'
 
 import { Department } from "@/models/department"
+import { PropsWithData } from "@/types"
 import serverFetch from "@/utils/serverFetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Label, Spinner } from 'flowbite-react'
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import DepartmentsDropdown from "../dropdowns/DepartmentsDropdown"
 import FormInput from '../forms/FormInput'
+import { useRouter } from "next/navigation"
 
 const validationSchema = z.object({
   name: z.string(),
@@ -18,28 +18,30 @@ const validationSchema = z.object({
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-export default function CreateSectionForm() {
+export default function EditDepartmentForm({ data }: PropsWithData<Department>) {
+  const [editingDepartment, setEditingDepartment] = useState(data)
   const [loading, setLoading] = useState(false)
-  const [department, setDepartment] = useState<Department>();
   const router = useRouter()
-
   const {
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<ValidationSchema>({
+    defaultValues: {
+      name: editingDepartment?.name || '',
+    },
     resolver: zodResolver(validationSchema),
   });
+  const id = data._id
 
-  const onSubmit: SubmitHandler<ValidationSchema> = async (data: any) => {
+  const onSubmit: SubmitHandler<ValidationSchema> = async (data) => {
     setLoading(true)
 
-    data.departmentId = department?._id;
-
     try {
-      await serverFetch.post('/sections', data)
+      await serverFetch.put(`/departments/${id}`, data)
+
       alert("Successfully saved data")
-      router.push("/sections")
+      router.back()
     } catch (error: any) {
       alert("Error saving data: " + error.message)
     }
@@ -62,29 +64,12 @@ export default function CreateSectionForm() {
               </p>
             )}
           </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="professor" value="Homeroom Professor" />
-            </div>
-            <FormInput name="professor" control={control} id="professor" required shadow />
-            {errors.professor && (
-              <p className="text-xs italic text-red-500 mt-2">
-                {errors.professor?.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="department" value="Department" />
-            </div>
-            <DepartmentsDropdown value={department} onChange={setDepartment} selectFirstValue />
-          </div>
         </div>
       </div>
       {loading ? (
         <Spinner size="xl" />
       ) : (
-        <Button type="submit">Create section</Button>
+        <Button type="submit">Update department</Button>
       )}
     </form>
   );

@@ -1,7 +1,7 @@
 'use client'
 
 import { BorrowTransactionItem } from "@/models/transaction"
-import { AppUser } from "@/models/user"
+import { AppUser, UserRole } from "@/models/user"
 import { useAppSelector } from "@/store"
 import { getAppUser } from "@/store/reducers/user"
 import serverFetch, { getErrorMessage } from "@/utils/serverFetch"
@@ -27,6 +27,8 @@ export default function CreateTransactionForm() {
   const [members, setMembers] = useState<string[]>([])
   const [transactItems, setTransactItems] = useState<BorrowTransactionItem[]>([])
   const [errorMessage, setErrorMessage] = useState('')
+  const isStudent = user?.role == UserRole.STUDENT
+  const isNonStudent = [UserRole.PROFESSOR, UserRole.GUEST].includes(user?.role || UserRole.GUEST)
 
   useEffect(() => {
     setSubjectId(subjects.length > 0 ? subjects[0]._id : '')
@@ -103,12 +105,26 @@ export default function CreateTransactionForm() {
         </div>
         <SelectUserInput value={user} onChange={setUser} />
       </div>
-      <div>
-        <div className="mb-2 block">
-          <Label value="Section" />
+      {isNonStudent && (
+        <div>
+          <div className="mb-2 block">
+            <Label value="Department" />
+          </div>
+          <span>
+            {user && user.department ? user.department.name : ''}
+          </span>
         </div>
-        <TextInput value={user && user.section ? user.section.name : ''} readOnly />
-      </div>
+      )}
+      {isStudent && (
+        <div>
+          <div className="mb-2 block">
+            <Label value="Section" />
+          </div>
+          <span>
+            {user && user.section ? user.section.name : ''}
+          </span>
+        </div>
+      )}
       <div>
         <div className="mb-2 block">
           <Label value="Student's Subject" />

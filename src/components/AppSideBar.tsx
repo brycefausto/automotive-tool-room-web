@@ -10,6 +10,7 @@ import { HiListBullet } from "react-icons/hi2";
 import { SiGoogleclassroom } from "react-icons/si";
 import { MdSubject } from "react-icons/md";
 import { IoMdChatbubbles } from "react-icons/io";
+import { RiOrganizationChart } from "react-icons/ri";
 
 const LinkSidebarItem = ({ children, href, ...props }: SidebarItemProps & { href: string }) => {
   return (
@@ -44,6 +45,9 @@ export default function AppSideBar() {
           </Sidebar.Collapse>
           <LinkSidebarItem href="/users" icon={HiUser}>
             Users
+          </LinkSidebarItem>
+          <LinkSidebarItem href="/departments" icon={RiOrganizationChart}>
+            Departments
           </LinkSidebarItem>
           <LinkSidebarItem href="/sections" icon={SiGoogleclassroom}>
             Sections

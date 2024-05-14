@@ -10,6 +10,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import FormInput from '../forms/FormInput'
 import { useRouter } from "next/navigation"
+import { Department } from "@/models/department"
+import DepartmentsDropdown from "../dropdowns/DepartmentsDropdown"
 
 const validationSchema = z.object({
   name: z.string(),
@@ -21,6 +23,7 @@ type ValidationSchema = z.infer<typeof validationSchema>;
 export default function EditSectionForm({ data }: PropsWithData<Section>) {
   const [editingSection, setEditingSection] = useState(data)
   const [loading, setLoading] = useState(false)
+  const [department, setDepartment] = useState<Department | undefined>(editingSection.department);
   const router = useRouter()
   const {
     control,
@@ -35,8 +38,10 @@ export default function EditSectionForm({ data }: PropsWithData<Section>) {
   });
   const id = data._id
 
-  const onSubmit: SubmitHandler<ValidationSchema> = async (data) => {
+  const onSubmit: SubmitHandler<ValidationSchema> = async (data: any) => {
     setLoading(true)
+
+    data.departmentId = department?._id;
 
     try {
       await serverFetch.put(`/sections/${id}`, data)
@@ -52,7 +57,7 @@ export default function EditSectionForm({ data }: PropsWithData<Section>) {
 
   return (
     <form className="flex max-w-lg flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4">
         <div>
           <div>
             <div className="mb-2 block">
@@ -75,6 +80,12 @@ export default function EditSectionForm({ data }: PropsWithData<Section>) {
                 {errors.professor?.message}
               </p>
             )}
+          </div>
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="department" value="Department" />
+            </div>
+            <DepartmentsDropdown value={department} onChange={setDepartment} />
           </div>
         </div>
       </div>

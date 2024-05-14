@@ -47,8 +47,8 @@ export default function UsersDropdown({ id, value, onChange }: UsersDropdownProp
         <components.Option {...props}>
           <div>{user.name}</div>
           <div>{user.email}</div>
-          {user.studentId && (
-            <div>{user.studentId}</div>
+          {user.idNumber && (
+            <div>{user.idNumber}</div>
           )}
         </components.Option>
       </div>

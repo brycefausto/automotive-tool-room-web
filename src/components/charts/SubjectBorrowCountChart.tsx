@@ -64,7 +64,7 @@ export default function SubjectBorrowCountChart() {
 
   return (
     <Loader loading={isLoading} error={error}>
-      <div className='w-[500px] h-[600px]'>
+      <div className='w-[500px] max-h-[600px] border border-gray-300 p-4'>
         <Bar options={options} data={chartData} />
       </div>
     </Loader>

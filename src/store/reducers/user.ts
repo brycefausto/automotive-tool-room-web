@@ -12,7 +12,7 @@ const initialState: UserState = {
     email: '',
     name: '',
     username: '',
-    studentId: '',
+    idNumber: '',
     role: UserRole.STUDENT,
     createdAt: ''
   }

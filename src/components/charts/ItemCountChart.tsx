@@ -53,7 +53,7 @@ export default function ItemCountChart() {
 
   return (
     <Loader loading={isLoading} error={error}>
-      <div className='w-[350px] h-[350px]'>
+      <div className='w-[350px] max-h-[350px] border border-gray-300 p-4'>
         <Pie data={chartData} />
       </div>
     </Loader>

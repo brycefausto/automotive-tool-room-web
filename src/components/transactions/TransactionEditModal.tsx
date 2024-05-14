@@ -1,4 +1,4 @@
-import { BorrowTransactionDTO } from '@/models/transaction'
+import { BorrowTransaction } from '@/models/transaction'
 import serverFetch, { getErrorMessage } from '@/utils/serverFetch'
 import { Button, Modal, Select } from 'flowbite-react'
 import { useRef } from 'react'
@@ -8,7 +8,7 @@ export interface TransactionEditModalProps {
   show: boolean
   setShow: (show: boolean) => void
   onClose: () => void
-  transaction: BorrowTransactionDTO
+  transaction: BorrowTransaction
   shouldReturn?: boolean
 }
 

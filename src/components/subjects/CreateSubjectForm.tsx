@@ -43,7 +43,7 @@ export default function CreateSubjectForm() {
 
   return (
     <form className="flex max-w-lg flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4">
         <div>
           <div>
             <div className="mb-2 block">

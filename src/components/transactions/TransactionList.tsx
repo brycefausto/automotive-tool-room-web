@@ -1,34 +1,33 @@
 'use client';
 import { PaginatedDocument } from '@/models';
-import { BorrowTransaction, BorrowTransactionDTO, constructReportData, toTransactionDto } from '@/models/transaction';
+import { BorrowTransaction } from '@/models/transaction';
 import { useListenerSocket } from '@/socket/listenerSocket';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { getAppUser, isUserAdmin } from '@/store/reducers/user';
 import serverFetch from '@/utils/serverFetch';
-import axios from 'axios';
-import { Button, Label, Pagination, Select, Table, Datepicker } from 'flowbite-react';
+import { convertToUrlParams } from '@/utils/stringUtils';
+import { Button, Datepicker, Label, Pagination, Select, Table } from 'flowbite-react';
 import { DateTime } from 'luxon';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import LoadingComponent from '../LoadingComponent';
-import TransactionDetailsModal from './TransactionDetailsModal';
-import TransactionListItem from './TransactionListItem';
-import TransactionEditModal from './TransactionEditModal';
 import RemarksFilterDropdown from './RemarksFilterDropdown';
-import { convertToUrlParams } from '@/utils/stringUtils';
+import TransactionDetailsModal from './TransactionDetailsModal';
+import TransactionEditModal from './TransactionEditModal';
+import TransactionListItem from './TransactionListItem';
 
 export default function TransactionList() {
   const user = useAppSelector(getAppUser);
   const isAdmin = useAppSelector(isUserAdmin);
   const dispatch = useAppDispatch();
-  const [transactions, setTransactions] = useState<BorrowTransactionDTO[]>([]);
+  const [transactions, setTransactions] = useState<BorrowTransaction[]>([]);
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState('all');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<BorrowTransactionDTO | null>();
+  const [selectedTransaction, setSelectedTransaction] = useState<BorrowTransaction | null>();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editShouldReturn, setEditShouldReturn] = useState(false);
@@ -46,7 +45,7 @@ export default function TransactionList() {
   useListenerSocket<PaginatedDocument<BorrowTransaction>>(
     'transactions', queryParams,
     (data) => {
-      const transactions = data.docs.map(toTransactionDto)
+      const transactions = data.docs
       setTransactions(transactions)
       setTotalPages(data.totalPages)
       setLoading(false)
@@ -100,7 +99,7 @@ export default function TransactionList() {
     }
   }
 
-  const handleClickDetails = (transaction: BorrowTransactionDTO) => {
+  const handleClickDetails = (transaction: BorrowTransaction) => {
     setSelectedTransaction(transaction)
     setShowDetailsModal(true)
   }
@@ -109,7 +108,7 @@ export default function TransactionList() {
     setSelectedTransaction(null)
   }
 
-  const handleClickEdit = (transaction: BorrowTransactionDTO) => {
+  const handleClickEdit = (transaction: BorrowTransaction) => {
     setSelectedTransaction(transaction)
     setShowEditModal(true)
   }
@@ -119,7 +118,7 @@ export default function TransactionList() {
     setEditShouldReturn(false)
   }
 
-  const handleClickReturn = (transaction: BorrowTransactionDTO) => {
+  const handleClickReturn = (transaction: BorrowTransaction) => {
     setEditShouldReturn(true)
     setSelectedTransaction(transaction)
     setShowEditModal(true)

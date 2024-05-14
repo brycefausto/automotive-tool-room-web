@@ -1,24 +1,26 @@
 'use client'
 
-import { AppUser, UserRole } from "@/models/user"
+import { Department } from "@/models/department"
+import { Section } from "@/models/section"
+import { Subject } from "@/models/subject"
+import { AppUser, UserRole, UserRoleOptions } from "@/models/user"
 import { useAppDispatch, useAppSelector } from "@/store"
-import { PropsWithData, PropsWithId } from "@/types"
+import { getAppUser } from "@/store/reducers/user"
+import { PropsWithData } from "@/types"
 import serverFetch, { getErrorMessage } from "@/utils/serverFetch"
+import { capitalizeWords } from "@/utils/stringUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Label, Spinner } from 'flowbite-react'
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import DepartmentsDropdown from "../dropdowns/DepartmentsDropdown"
+import SectionsDropdown from "../dropdowns/SectionsDropdown"
+import SubjectsDropdown from "../dropdowns/SubjectsDropdown"
 import FormInput from '../forms/FormInput'
 import FormSelect from "../forms/FormSelect"
 import ChangePasswordModal from "./ChangePasswordModal"
-import { getAppUser } from "@/store/reducers/user"
-import { Section } from "@/models/section"
-import { Subject } from "@/models/subject"
-import SectionsDropdown from "./SectionsDropdown"
-import SubjectsDropdown from "./SubjectsDropdown"
-import useDataFetch from "@/hooks/dataFetch"
-import Loader from "../Loader"
+import { useRouter } from "next/navigation"
 
 const validationSchema = z.object({
   username: z.string().min(3).max(30)
@@ -27,7 +29,7 @@ const validationSchema = z.object({
     ),
   email: z.string().email(),
   name: z.string(),
-  studentId: z.string().optional(),
+  idNumber: z.string().optional(),
   phone: z.string().optional(),
   address: z.string().optional(),
   role: z.nativeEnum(UserRole)
@@ -37,12 +39,14 @@ type ValidationSchema = z.infer<typeof validationSchema>;
 
 export default function EditUserForm({ data }: PropsWithData<AppUser>) {
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const appUser = useAppSelector(getAppUser)
   const editingUser = data
   const [loading, setLoading] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const sectionRef = useRef<Section | undefined>(editingUser?.section)
   const subjectsRef = useRef<Subject[]>(editingUser && editingUser.subjects ? editingUser.subjects : [])
+  const [department, setDepartment] = useState<Department | undefined>(editingUser.department)
 
   const {
     control,
@@ -54,7 +58,7 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
       username: editingUser?.username || '',
       email: editingUser?.email || '',
       name: editingUser?.name || '',
-      studentId: editingUser?.studentId || '',
+      idNumber: editingUser?.idNumber || '',
       role: editingUser?.role || UserRole.STUDENT,
       phone: editingUser?.phone || '',
       address: editingUser?.address || '',
@@ -64,11 +68,15 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
 
   const onSubmit: SubmitHandler<ValidationSchema> = async (data: any) => {
     setLoading(true)
-    data.sectionId = sectionRef.current?._id
-    data.subjectIds = subjectsRef.current.map(it => it._id)
+    if (isStudent) {
+      data.sectionId = sectionRef.current?._id
+      data.subjectIds = subjectsRef.current.map(it => it._id)
+    }
+    data.departmentId = department?._id
 
     try {
       await serverFetch.put(`/users/${editingUser?._id}`, data)
+      router.push("/users")
 
       alert("Successfully saved data")
     } catch (error: any) {
@@ -80,13 +88,20 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
 
   const handleSectionChange = (section: Section) => {
     sectionRef.current = section
+    setDepartment(section.department)
+  }
+
+
+  const handleDepartmentChange = (department: Department) => {
+    setDepartment(department)
   }
 
   const handleSubjectsChange = (subjects: Subject[]) => {
     subjectsRef.current = subjects
   }
 
-  const isStudentOrGuest = [UserRole.STUDENT, UserRole.GUEST].includes(watch('role'))
+  const isStudent = watch('role') == UserRole.STUDENT;
+  const isProfOrGuest = [UserRole.PROFESSOR, UserRole.GUEST].includes(watch('role'));
 
   return (
     <>
@@ -132,10 +147,9 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
             <Label htmlFor="role" value="Select Role" />
           </div>
           <FormSelect name="role" control={control} id="role">
-            <option value="guest">Guest</option>
-            <option value="student">Student</option>
-            <option value="lab tech">Lab Tech</option>
-            <option value="admin">Admin</option>
+            {UserRoleOptions.map(({ value }) => (
+              <option value={value}>{capitalizeWords(value)}</option>
+            ))}
           </FormSelect>
           {errors.role && (
             <p className="text-xs italic text-red-500 mt-2">
@@ -143,31 +157,41 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
             </p>
           )}
         </div>
-        {isStudentOrGuest && (
-          <div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="idNumber" value="ID Number" />
+          </div>
+          <FormInput name="idNumber" control={control} id="idNumber" shadow />
+          {errors.idNumber && (
+            <p className="text-xs italic text-red-500 mt-2">
+              {errors.idNumber?.message}
+            </p>
+          )}
+        </div>
+        {isProfOrGuest && (
+          <div className="max-w-md">
             <div className="mb-2 block">
-              <Label htmlFor="studentId" value="Student ID" />
+              <Label htmlFor="department" value="Select Department" />
             </div>
-            <FormInput name="studentId" control={control} id="studentId" shadow />
-            {errors.studentId && (
-              <p className="text-xs italic text-red-500 mt-2">
-                {errors.studentId?.message}
-              </p>
-            )}
+            <DepartmentsDropdown value={department} onChange={handleDepartmentChange} />
           </div>
         )}
-        <div className="max-w-md">
-          <div className="mb-2 block">
-            <Label htmlFor="sections" value="Select Section" />
-          </div>
-          <SectionsDropdown value={sectionRef.current} onChange={handleSectionChange} />
-        </div>
-        <div className="max-w-md">
-          <div className="mb-2 block">
-            <Label htmlFor="subjects" value="Select Subjects" />
-          </div>
-          <SubjectsDropdown values={subjectsRef.current} onChange={handleSubjectsChange} />
-        </div>
+        {isStudent && (
+          <>
+            <div className="max-w-md">
+              <div className="mb-2 block">
+                <Label htmlFor="section" value="Select Section" />
+              </div>
+              <SectionsDropdown value={sectionRef.current} onChange={handleSectionChange} />
+            </div>
+            <div className="max-w-md">
+              <div className="mb-2 block">
+                <Label htmlFor="subjects" value="Select Subjects" />
+              </div>
+              <SubjectsDropdown values={subjectsRef.current} onChange={handleSubjectsChange} />
+            </div>
+          </>
+        )}
         <div>
           <div className="mb-2 block">
             <Label htmlFor="phone" value="Phone" />

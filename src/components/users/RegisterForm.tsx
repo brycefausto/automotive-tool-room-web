@@ -2,7 +2,7 @@
 
 import { Section } from "@/models/section"
 import { Subject } from "@/models/subject"
-import { UserRole } from "@/models/user"
+import { UserRole, UserRoleOptions } from "@/models/user"
 import serverFetch, { getErrorMessage } from "@/utils/serverFetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Label, Spinner } from 'flowbite-react'
@@ -12,8 +12,12 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import FormInput from '../forms/FormInput'
 import FormSelect from "../forms/FormSelect"
-import SectionsDropdown from "./SectionsDropdown"
-import SubjectsDropdown from "./SubjectsDropdown"
+import SectionsDropdown from "../dropdowns/SectionsDropdown"
+import SubjectsDropdown from "../dropdowns/SubjectsDropdown"
+import { capitalize } from "lodash"
+import { capitalizeWords } from "@/utils/stringUtils"
+import DepartmentsDropdown from "../dropdowns/DepartmentsDropdown"
+import { Department } from "@/models/department"
 
 const validationSchema = z.object({
   username: z.string().min(3).max(30)
@@ -24,7 +28,7 @@ const validationSchema = z.object({
   password: z.string().min(5),
   confirmPassword: z.string(),
   name: z.string(),
-  studentId: z.string().optional(),
+  idNumber: z.string().optional(),
   phone: z.string().optional(),
   address: z.string().optional(),
   role: z.nativeEnum(UserRole)
@@ -45,6 +49,7 @@ export default function RegisterForm() {
   const router = useRouter()
   const sectionRef = useRef<Section>()
   const subjectsRef = useRef<Subject[]>([])
+  const [department, setDepartment] = useState<Department | undefined>()
   const {
     control,
     handleSubmit,
@@ -60,8 +65,11 @@ export default function RegisterForm() {
   const onSubmit: SubmitHandler<ValidationSchema> = async (data: any) => {
     setLoading(true)
 
-    data.sectionId = sectionRef.current?._id
-    data.subjectIds = subjectsRef.current.map(it => it._id)
+    if (isStudent) {
+      data.sectionId = sectionRef.current?._id
+      data.subjectIds = subjectsRef.current.map(it => it._id)
+    }
+    data.departmentId = department?._id
 
     try {
       await serverFetch.post('/users', data)
@@ -76,13 +84,19 @@ export default function RegisterForm() {
 
   const handleSectionChange = (section: Section) => {
     sectionRef.current = section
+    setDepartment(section.department)
+  }
+
+  const handleDepartmentChange = (department: Department) => {
+    setDepartment(department)
   }
 
   const handleSubjectsChange = (subjects: Subject[]) => {
     subjectsRef.current = subjects
   }
 
-  const isStudentOrGuest = [UserRole.STUDENT, UserRole.GUEST].includes(watch('role'))
+  const isStudent = watch('role') == UserRole.STUDENT;
+  const isProfOrGuest = [UserRole.PROFESSOR, UserRole.GUEST].includes(watch('role'));
 
   return (
     <form className="flex max-w-md flex-col gap-4" autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
@@ -146,10 +160,9 @@ export default function RegisterForm() {
           <Label htmlFor="roles" value="Select Role" />
         </div>
         <FormSelect name="role" control={control}>
-          <option value="guest">Guest</option>
-          <option value="student">Student</option>
-          <option value="lab tech">Lab Tech</option>
-          <option value="admin">Admin</option>
+          {UserRoleOptions.map(({ value }) => (
+            <option value={value}>{capitalizeWords(value)}</option>
+          ))}
         </FormSelect>
         {errors.role && (
           <p className="text-xs italic text-red-500 mt-2">
@@ -157,31 +170,49 @@ export default function RegisterForm() {
           </p>
         )}
       </div>
-      {isStudentOrGuest && (
-        <div>
+      <div>
+        <div className="mb-2 block">
+          <Label htmlFor="idNumber" value="ID Number" />
+        </div>
+        <FormInput name="idNumber" control={control} id="idNumber" shadow />
+        {errors.idNumber && (
+          <p className="text-xs italic text-red-500 mt-2">
+            {errors.idNumber?.message}
+          </p>
+        )}
+      </div>
+      {isStudent && (
+        <div className="max-w-md">
           <div className="mb-2 block">
-            <Label htmlFor="studentId" value="Student ID" />
+            <Label htmlFor="section" value="Select Section" />
           </div>
-          <FormInput name="studentId" control={control} id="studentId" shadow />
-          {errors.studentId && (
-            <p className="text-xs italic text-red-500 mt-2">
-              {errors.studentId?.message}
-            </p>
-          )}
+          <SectionsDropdown value={sectionRef.current} onChange={handleSectionChange} />
         </div>
       )}
-      <div className="max-w-md">
-        <div className="mb-2 block">
-          <Label htmlFor="sections" value="Select Section" />
+      {isProfOrGuest && (
+        <div className="max-w-md">
+          <div className="mb-2 block">
+            <Label htmlFor="department" value="Select Department" />
+          </div>
+          <DepartmentsDropdown value={department} onChange={handleDepartmentChange} />
         </div>
-        <SectionsDropdown onChange={handleSectionChange} />
-      </div>
-      <div className="max-w-md">
-        <div className="mb-2 block">
-          <Label htmlFor="subjects" value="Select Subjects" />
-        </div>
-        <SubjectsDropdown onChange={handleSubjectsChange} />
-      </div>
+      )}
+      {isStudent && (
+        <>
+          <div className="max-w-md">
+            <div className="mb-2 block">
+              <Label htmlFor="section" value="Select Section" />
+            </div>
+            <SectionsDropdown value={sectionRef.current} onChange={handleSectionChange} />
+          </div>
+          <div className="max-w-md">
+            <div className="mb-2 block">
+              <Label htmlFor="subjects" value="Select Subjects" />
+            </div>
+            <SubjectsDropdown values={subjectsRef.current} onChange={handleSubjectsChange} />
+          </div>
+        </>
+      )}
       <div>
         <div className="mb-2 block">
           <Label htmlFor="phone" value="Phone" />
