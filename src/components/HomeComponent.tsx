@@ -8,6 +8,7 @@ import { SiGoogleclassroom } from "react-icons/si";
 import LinkButton from "./buttons/LinkButton";
 import ItemBorrowCountChart from "./charts/ItemBorrowCountChart";
 import SubjectBorrowCountChart from "./charts/SubjectBorrowCountChart";
+import DepartmentBorrowCountChart from "./charts/DepartmentBorrowCountChart";
 
 export default function HomeComponent() {
   return (
@@ -22,6 +23,7 @@ export default function HomeComponent() {
         <LinkButton href="/subjects"><MdSubject className="mr-2" size={24} />Subjects</LinkButton>
         <LinkButton href="/transactions"><FaRegListAlt className="mr-2" size={24} />Transactions</LinkButton>
       </div>
+      <DepartmentBorrowCountChart />
       <SubjectBorrowCountChart />
     </div>
     <div className="flex flex-col gap-5 basis-1/2">

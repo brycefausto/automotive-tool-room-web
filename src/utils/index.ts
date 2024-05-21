@@ -36,9 +36,12 @@ export function setStorageString(key: string, value: string) {
 
 export function getStorageItem<T = any>(key: string) {
   if (isBrowser) {
-    const obj = JSON.parse(localStorage.getItem(key) || '{}')
+    const stringValue = localStorage.getItem(key)
+    if (stringValue) {
+      const obj = JSON.parse(stringValue)
 
-    return obj as T
+      return obj as T
+    }
   }
 }
 

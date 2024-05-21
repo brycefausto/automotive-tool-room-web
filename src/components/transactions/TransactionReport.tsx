@@ -18,9 +18,11 @@ export default function TransactionReport() {
   }
   return (
     <div className="p-2">
-      <Button className="ml-10" onClick={handlePrint}>Print Report</Button>
+      <div className="pb-2">
+        <Button className="ml-10" onClick={handlePrint}>Print Report</Button>
+      </div>
       <div className="flex h-screen">
-        <iframe srcDoc={reportDoc}  id="report" className="w-full">
+        <iframe srcDoc={reportDoc} id="report" className="w-full">
         </iframe>
       </div>
     </div>

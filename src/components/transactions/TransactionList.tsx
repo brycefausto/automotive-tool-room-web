@@ -15,6 +15,7 @@ import RemarksFilterDropdown from './RemarksFilterDropdown';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import TransactionEditModal from './TransactionEditModal';
 import TransactionListItem from './TransactionListItem';
+import UserNamesDropdown from './UserNamesDropdown';
 
 export default function TransactionList() {
   const user = useAppSelector(getAppUser);
@@ -33,6 +34,8 @@ export default function TransactionList() {
   const [editShouldReturn, setEditShouldReturn] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [borrower, setBorrower] = useState<string>('');
+  const [borrowerSearch, setBorrowerSearch] = useState<string>('');
   const [startTimestamp, setStartTimestamp] = useState<string | null>();
   const [endTimestamp, setEndTimestamp] = useState<string | null>();
   const remarksFilterRef = useRef<string>();
@@ -40,7 +43,7 @@ export default function TransactionList() {
   const [remarksParams, setRemarksParams] = useState<{ remarksFilter?: string, remarks?: string[] }>({});
   const { remarksFilter, remarks } = remarksParams;
   const onPageChange = (page: number) => setCurrentPage(page);
-  const queryParams = { page: currentPage, startTimestamp, endTimestamp, remarksFilter, remarks }
+  const queryParams = { page: currentPage, borrower: borrowerSearch, startTimestamp, endTimestamp, remarksFilter, remarks }
 
   useListenerSocket<PaginatedDocument<BorrowTransaction>>(
     'transactions', queryParams,
@@ -82,13 +85,11 @@ export default function TransactionList() {
 
   const handleGenerateReport = async () => {
     try {
-      // const { startTimestamp, endTimestamp } = getTimestampsFromDateRange();
-      // const timestampParamString = (startTimestamp && endTimestamp) ? `&startTimestamp=${encodeURIComponent(startTimestamp)}&endTimestamp=${encodeURIComponent(endTimestamp)}` : ''
       let url = '/transactions/generateReport'
 
       if (Object.keys(queryParams).length > 0) {
         const urlParams = convertToUrlParams(queryParams)
-        
+
         url += `?${urlParams}`
       }
       await serverFetch.post(url)
@@ -148,10 +149,11 @@ export default function TransactionList() {
 
   const handleSearch = () => {
     const { startTimestamp, endTimestamp } = getTimestampsFromDateRange();
+    setBorrowerSearch(borrower);
     setStartTimestamp(startTimestamp);
     setEndTimestamp(endTimestamp);
     const isFilterWithRemarks = remarksFilterRef.current == 'With Remarks';
-    setRemarksParams({ remarksFilter: remarksFilterRef.current, remarks: isFilterWithRemarks ? remarksRef.current: undefined });
+    setRemarksParams({ remarksFilter: remarksFilterRef.current, remarks: isFilterWithRemarks ? remarksRef.current : undefined });
   }
 
   return (
@@ -161,6 +163,13 @@ export default function TransactionList() {
           <span className="text-2xl font-bold">Transactions</span>
         </div>
         <div className="flex flex-auto">
+        </div>
+        <div className="flex items-center mr-2">
+          <UserNamesDropdown value={borrower} onChange={(value) => {
+            const newValue = value.replace(/[^\w\s]/gi, '')
+            console.log("borrower", newValue)
+            setBorrower(newValue)
+          }} />
         </div>
         <div className="flex items-center mr-2">
           <Label htmlFor="dateFilter">Date Filter: </Label>
@@ -201,25 +210,41 @@ export default function TransactionList() {
           <Button className="justify-self-end">Add</Button>
         </Link>
       </div>
-      <Table striped>
-        <Table.Head>
-          <Table.HeadCell>Date</Table.HeadCell>
-          <Table.HeadCell>Borrower</Table.HeadCell>
-          <Table.HeadCell>Status</Table.HeadCell>
-          <Table.HeadCell>Total</Table.HeadCell>
-          <Table.HeadCell>Approved By</Table.HeadCell>
-          <Table.HeadCell>Returned At</Table.HeadCell>
-          <Table.HeadCell>Returned By</Table.HeadCell>
-          <Table.HeadCell>
-            <span className="sr-only">Edit</span>
-          </Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-sky-200 dark:bg-gray-700 dark:text-gray-400 border border-gray-600 border-b-2">
+          <tr>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Date
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Borrower
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Status
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Total
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Approved By
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Returned At
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              Returned By
+            </th>
+            <th scope="col" className="px-6 py-3 border border-gray-400">
+              <span className="sr-only">Edit</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y bg-sky-100">
           {transactions.map(transaction => (
             <TransactionListItem key={transaction._id} transaction={transaction} onClickDetails={handleClickDetails} onClickEdit={handleClickEdit} onClickReturn={handleClickReturn} onSetPage={setCurrentPage} />
           ))}
-        </Table.Body>
-      </Table>
+        </tbody>
+      </table>
       {transactions.length == 0 && (
         <div className="flex justify-center p-10">
           <p className="text-gray-500 text-2xl">The list is empty.</p>

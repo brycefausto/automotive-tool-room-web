@@ -59,27 +59,37 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
 
     return (
         <React.Fragment>
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+            <tr className="border-b border-gray-800">
+                <td className="px-6 py-4 border border-gray-400 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <span>{transaction.borrowedAtString || transaction.createdAtString}</span>
                     <div className="float-right">
                         <DetailsButton onClick={() => onClickDetails(transaction)} />
                     </div>
-                </Table.Cell>
-                <Table.Cell>{transaction.user.name}</Table.Cell>
-                <Table.Cell>
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
+                    {transaction.user.name}
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
                     <span>
                         {transaction.statusString}
                         <span className="m-5">
                             {renderStatusIcon()}
                         </span>
                     </span>
-                </Table.Cell>
-                <Table.Cell>{transaction.total}</Table.Cell>
-                <Table.Cell>{transaction.approveUser?.name}</Table.Cell>
-                <Table.Cell>{transaction.returnedAtString}</Table.Cell>
-                <Table.Cell>{transaction.returnUser?.name}</Table.Cell>
-                <Table.Cell>
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
+                    {transaction.total}
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
+                    {transaction.approveUser?.name}
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
+                    {transaction.returnedAtString}
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
+                    {transaction.returnUser?.name}
+                </td>
+                <td className="px-6 py-4 border border-gray-400">
                     {transaction.status == BorrowTransactionStatus.RESERVED
                         && <Button
                             className="mr-3 mb-2 bg-green-400"
@@ -102,16 +112,19 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
                     }
                     {[BorrowTransactionStatus.APPROVED, BorrowTransactionStatus.NOT_RETURNED].includes(transaction.status)
                         && <div className="my-2">
-                        <EditButton onClick={() => onClickEdit(transaction)} />
-                      </div> 
+                            <EditButton onClick={() => onClickEdit(transaction)} />
+                        </div>
                     }
-                </Table.Cell>
-            </Table.Row>
-            <Table.Row>
-                <Table.Cell colSpan={9} className="pt-0 pb-0 pl-10 pr-0">
+                </td>
+            </tr>
+            <tr className="border-b border-gray-800">
+                <td colSpan={9} className="border border-gray-400 pl-10 pr-3 py-2 bg-white">
+                    <div className="font-bold text-gray-900 text-md p-1">
+                        Items:
+                    </div>
                     <TransactionItemList transactionId={transaction._id} items={transaction.displayItems} />
-                </Table.Cell>
-            </Table.Row>
+                </td>
+            </tr>
         </React.Fragment>
     )
 }

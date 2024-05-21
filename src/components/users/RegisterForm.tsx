@@ -161,7 +161,7 @@ export default function RegisterForm() {
         </div>
         <FormSelect name="role" control={control}>
           {UserRoleOptions.map(({ value }) => (
-            <option value={value}>{capitalizeWords(value)}</option>
+            <option key={value} value={value}>{capitalizeWords(value)}</option>
           ))}
         </FormSelect>
         {errors.role && (
@@ -181,14 +181,6 @@ export default function RegisterForm() {
           </p>
         )}
       </div>
-      {isStudent && (
-        <div className="max-w-md">
-          <div className="mb-2 block">
-            <Label htmlFor="section" value="Select Section" />
-          </div>
-          <SectionsDropdown value={sectionRef.current} onChange={handleSectionChange} />
-        </div>
-      )}
       {isProfOrGuest && (
         <div className="max-w-md">
           <div className="mb-2 block">

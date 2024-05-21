@@ -52,24 +52,28 @@ export default function TransactionDetailsModal({ show, setShow, onClose, transa
         <div>
           <p><span className="font-bold">Items:</span></p>
           <table className="w-[100%] text-left">
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Size</th>
-              <th>Quantity</th>
-              <th>Fill Status</th>
-              <th>Remarks</th>
-            </tr>
-            {transaction.items.map((item, i) => (
-              <tr key={i}>
-                <td>{item.item.name}</td>
-                <td>{item.item.category}</td>
-                <td>{item.size}</td>
-                <td>{item.quantity}</td>
-                <td>{item.fillStatus}</td>
-                <td>{item.remarks}</td>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Fill Status</th>
+                <th>Remarks</th>
               </tr>
-            ))}
+            </thead>
+            <tbody>
+              {transaction.items.map((item, i) => (
+                <tr key={i}>
+                  <td>{item.item.name}</td>
+                  <td>{item.item.category}</td>
+                  <td>{item.size}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.fillStatus}</td>
+                  <td>{item.remarks}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </Modal.Body>

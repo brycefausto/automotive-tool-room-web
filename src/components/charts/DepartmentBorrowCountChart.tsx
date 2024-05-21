@@ -31,15 +31,15 @@ const options = {
     },
     title: {
       display: true,
-      text: 'Borrow Count by Subject Chart',
+      text: 'Borrow Count by Department Chart',
     },
   },
 };
 
-const labels = ['Borrow Count by Subject'];
+const labels = ['Borrow Count'];
 
-export default function SubjectBorrowCountChart() {
-  const { data, isLoading, error } = useDataFetch<any[]>('/reports/subjects')
+export default function DepartmentBorrowCountChart() {
+  const { data, isLoading, error } = useDataFetch<any[]>('/reports/departments')
   const itemCountData = data || []
 
   const backgroundColors = ['#FF0000', '#3CB371', '#87CEEB', '#FFFF00', '#FF4500', '#00FFFF', '#4169E1', '	#9370DB', '	#FF00FF', '#FFA500'];
@@ -51,7 +51,7 @@ export default function SubjectBorrowCountChart() {
     }
 
     return {
-      label: countData.subjectName,
+      label: countData.departmentName,
       data: [countData.quantity],
       backgroundColor
     }

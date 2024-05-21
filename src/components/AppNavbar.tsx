@@ -1,33 +1,25 @@
 'use client'
-import { getMessagingToken } from '@/config/firebase-messaging';
-import { useAppDispatch, useAppSelector } from '@/store';
-import { getStoredToken, setStoredToken } from '@/store/reducers/messaging';
+import { useAppSelector } from '@/store';
+import { getStoredToken } from '@/store/reducers/messaging';
 import { getAppUser } from '@/store/reducers/user';
 import { clearStorageItem } from '@/utils';
 import serverFetch from '@/utils/serverFetch';
-import { Avatar, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
+import { Avatar, Button, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import NotificationBell from './NotificationBell';
-import Image from 'next/image';
+import MessagingComponent from './MessagingComponent';
 
 export default function AppNavbar() {
   const router = useRouter()
   const user = useAppSelector(getAppUser)
   const [loaded, setLoaded] = useState(false);
   const storedToken = useAppSelector(getStoredToken)
-  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setLoaded(true)
-    if (!storedToken) {
-      getMessagingToken().then((token) => {
-        if (token) {
-          dispatch(setStoredToken(token))
-        }
-      })
-    }
   }, [])
 
   const handleLogout = async () => {
@@ -42,11 +34,21 @@ export default function AppNavbar() {
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Automotive Tool Room Management</span>
       </NavbarBrand>
       <div className="flex md:order-2">
+        {/* <Button className="mx-2" onClick={async () => {
+          await serverFetch.post(`/messaging/testMessage`);
+        }}>
+          Test Notif
+        </Button> */}
         <NotificationBell />
         {loaded && (
-          <div className="mx-2 flex items-center">
-            <span className="block font-medium text-md">{user.name}</span>
-          </div>
+          <>
+            {user.loggedIn && (
+              <MessagingComponent />
+            )}
+            <div className="mx-2 flex items-center">
+              <span className="block font-medium text-md">{user.name}</span>
+            </div>
+          </>
         )}
         <Dropdown
           arrowIcon={false}

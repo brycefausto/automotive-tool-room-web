@@ -14,7 +14,7 @@ const initialState: UserState = {
     username: '',
     idNumber: '',
     role: UserRole.STUDENT,
-    createdAt: ''
+    createdAt: '',
   }
 }
 
@@ -23,7 +23,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setAppUser: (state, action: PayloadAction<AppUser>) => {
-      state.user = action.payload
+      state.user = { ...action.payload, loggedIn: true }
     },
     removeAppUser: (state) => {
       state.user = initialState.user

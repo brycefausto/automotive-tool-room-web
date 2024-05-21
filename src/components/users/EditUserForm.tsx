@@ -148,7 +148,7 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
           </div>
           <FormSelect name="role" control={control} id="role">
             {UserRoleOptions.map(({ value }) => (
-              <option value={value}>{capitalizeWords(value)}</option>
+              <option key={value} value={value}>{capitalizeWords(value)}</option>
             ))}
           </FormSelect>
           {errors.role && (

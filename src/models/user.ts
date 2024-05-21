@@ -27,4 +27,5 @@ export interface AppUser {
   sessionToken?: string
   messagingTokens?: string[]
   createdAt: string
+  loggedIn?: boolean
 }

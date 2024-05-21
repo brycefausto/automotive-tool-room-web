@@ -1,5 +1,5 @@
 'use client'
-import { getMessaging, getToken, isSupported } from "firebase/messaging";
+import { getMessaging, getToken, isSupported, onMessage } from "firebase/messaging";
 import { FIREBASE_APP } from "./firebase";
 
 export const getFirebaseMessaging = async () => {
@@ -32,4 +32,19 @@ export const getMessagingToken = async () => {
       console.log('An error occurred while retrieving token. ', error);
     }
   }
+}
+
+export const onFirebaseMessage = (callback: (payloadData: any) => void) => {
+  if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    const messaging = getMessaging(FIREBASE_APP);
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log('Push notification received:', payload);
+      callback(payload.data);
+    });
+    return () => {
+      unsubscribe(); // Unsubscribe from the onMessage event on cleanup
+    };
+  }
+
+  return () => {}
 }
