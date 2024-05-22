@@ -93,7 +93,7 @@ export default function NotificationBell() {
 
   return (
     <div className="mr-5" ref={(ref) => divRef.current = ref}>
-      <Button color="light" className="mr-5" disabled={appNotifications.length == 0} onClick={toggleShow}>
+      <Button color="light" className="mr-5" onClick={toggleShow}>
         <HiOutlineBell size={24} />
         {appNotifications.length > 0 && (
           <Badge className="absolute top-0 left-10 rounded-full">{appNotifications.length}</Badge>
@@ -107,19 +107,27 @@ export default function NotificationBell() {
           aria-orientation="vertical"
           style={{ position: 'absolute', left: 0, top: 0, minWidth: '60px', transform: 'translate(1327px, 64px)' }}
         >
-          <div className="flex align-end justify-end p-2">
-            <button className="text-blue-500 hover:text-blue-700 underline" onClick={handleClearAll}>Clear All</button>
-          </div>
-          <div className="overflow-y-auto max-h-[720px]">
-            <div className="flex flex-col divide-y py-1">
-              {appNotifications.map(renderItem)}
-            </div>
-            {totalPages > 1 && currentPage < totalPages && (
-              <div className="p-2">
-                <button className="text-blue-500 hover:text-blue-700 underline" onClick={loadMoreNotifications}>View More</button>
+          {appNotifications.length > 0 ? (
+            <>
+              <div className="flex align-end justify-end p-2">
+                <button className="text-blue-500 hover:text-blue-700 underline" onClick={handleClearAll}>Clear All</button>
               </div>
-            )}
-          </div>
+              <div className="overflow-y-auto max-h-[720px]">
+                <div className="flex flex-col divide-y py-1">
+                  {appNotifications.map(renderItem)}
+                </div>
+                {totalPages > 1 && currentPage < totalPages && (
+                  <div className="p-2">
+                    <button className="text-blue-500 hover:text-blue-700 underline" onClick={loadMoreNotifications}>View More</button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="flex align-center justify-center p-2">
+              <span className="text-gray-500">You have no notifications.</span>
+            </div>
+          )}
         </div>
       )}
     </div>
