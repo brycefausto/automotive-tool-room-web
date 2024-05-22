@@ -239,7 +239,7 @@ export default function TransactionList() {
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y bg-sky-100">
+        <tbody className="bg-sky-100">
           {transactions.map(transaction => (
             <TransactionListItem key={transaction._id} transaction={transaction} onClickDetails={handleClickDetails} onClickEdit={handleClickEdit} onClickReturn={handleClickReturn} onSetPage={setCurrentPage} />
           ))}

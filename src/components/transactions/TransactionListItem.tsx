@@ -59,7 +59,7 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
 
     return (
         <React.Fragment>
-            <tr className="border-b border-gray-800">
+            <tr className="border-b border-gray-800 border-t-2">
                 <td className="px-6 py-4 border border-gray-400 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <span>{transaction.borrowedAtString || transaction.createdAtString}</span>
                     <div className="float-right">
@@ -118,10 +118,7 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
                 </td>
             </tr>
             <tr className="border-b border-gray-800">
-                <td colSpan={9} className="border border-gray-400 pl-10 pr-3 py-2 bg-white">
-                    <div className="font-bold text-gray-900 text-md p-1">
-                        Items:
-                    </div>
+                <td colSpan={9} className="border border-gray-400 pl-10 pr-3 pt-5 pb-12 bg-white">
                     <TransactionItemList transactionId={transaction._id} items={transaction.displayItems} />
                 </td>
             </tr>
