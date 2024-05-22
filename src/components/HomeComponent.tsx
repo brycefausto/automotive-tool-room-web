@@ -9,6 +9,7 @@ import LinkButton from "./buttons/LinkButton";
 import ItemBorrowCountChart from "./charts/ItemBorrowCountChart";
 import SubjectBorrowCountChart from "./charts/SubjectBorrowCountChart";
 import DepartmentBorrowCountChart from "./charts/DepartmentBorrowCountChart";
+import DepartmentLostCountChart from "./charts/DepartmentLostCountChart";
 
 export default function HomeComponent() {
   return (
@@ -29,6 +30,7 @@ export default function HomeComponent() {
     <div className="flex flex-col gap-5 basis-1/2">
       <ItemCountChart />
       <ItemBorrowCountChart />
+      <DepartmentLostCountChart />
     </div>
   </div>
   )

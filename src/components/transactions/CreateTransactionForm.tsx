@@ -10,7 +10,7 @@ import _ from "lodash"
 import { useRouter } from "next/navigation"
 import { FormEventHandler, useEffect, useState } from "react"
 import { FaTimesCircle } from "react-icons/fa"
-import TransactionItemForm from "./TransactionItemForm"
+import TransactionItemForm, { BorrowTransactionItemDto } from "./TransactionItemForm"
 import UserSubjectsDropdown from "./UserSubjectsDropdown"
 import SelectUserInput from "./UsersDropdown"
 import ErrorMessageAlert from "../alerts/ErrorMessageAlert"
@@ -25,7 +25,7 @@ export default function CreateTransactionForm() {
   const [groupNo, setGroupNo] = useState<string>('')
   const [member, setMember] = useState<string>('')
   const [members, setMembers] = useState<string[]>([])
-  const [transactItems, setTransactItems] = useState<BorrowTransactionItem[]>([])
+  const [transactItems, setTransactItems] = useState<BorrowTransactionItemDto[]>([])
   const [errorMessage, setErrorMessage] = useState('')
   const isStudent = user?.role == UserRole.STUDENT
   const isNonStudent = [UserRole.PROFESSOR, UserRole.GUEST].includes(user?.role || UserRole.GUEST)
@@ -93,7 +93,7 @@ export default function CreateTransactionForm() {
     setMembers(newMembers)
   }
 
-  const handleOnChangeTransactItems = (value: BorrowTransactionItem[]) => {
+  const handleOnChangeTransactItems = (value: BorrowTransactionItemDto[]) => {
     setTransactItems(value)
   }
 
@@ -125,12 +125,14 @@ export default function CreateTransactionForm() {
           </span>
         </div>
       )}
-      <div>
-        <div className="mb-2 block">
-          <Label value="Student's Subject" />
+      {isStudent && (
+        <div>
+          <div className="mb-2 block">
+            <Label value="Student's Subject" />
+          </div>
+          <UserSubjectsDropdown value={subjectId} onChange={setSubjectId} options={user && user.subjects ? user.subjects : []} />
         </div>
-        <UserSubjectsDropdown value={subjectId} onChange={setSubjectId} options={user && user.subjects ? user.subjects : []} />
-      </div>
+      )}
       <div>
         <div className="mb-2 block">
           <Label htmlFor="groupNo" value="Group No." />

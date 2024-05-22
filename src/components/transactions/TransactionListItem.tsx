@@ -77,7 +77,7 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
                         </span>
                     </span>
                 </td>
-                <td className="px-6 py-4 border border-gray-400">
+                <td className="px-6 py-4 border border-gray-400 text-center">
                     {transaction.total}
                 </td>
                 <td className="px-6 py-4 border border-gray-400">

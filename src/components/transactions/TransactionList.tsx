@@ -16,6 +16,7 @@ import TransactionDetailsModal from './TransactionDetailsModal';
 import TransactionEditModal from './TransactionEditModal';
 import TransactionListItem from './TransactionListItem';
 import UserNamesDropdown from './UserNamesDropdown';
+import _ from 'lodash';
 
 export default function TransactionList() {
   const user = useAppSelector(getAppUser);
@@ -87,8 +88,9 @@ export default function TransactionList() {
     try {
       let url = '/transactions/generateReport'
 
-      if (Object.keys(queryParams).length > 0) {
-        const urlParams = convertToUrlParams(queryParams)
+      const reportQueryParams = _.omit(queryParams, ['page'])
+      if (Object.keys(reportQueryParams).length > 0) {
+        const urlParams = convertToUrlParams(reportQueryParams)
 
         url += `?${urlParams}`
       }

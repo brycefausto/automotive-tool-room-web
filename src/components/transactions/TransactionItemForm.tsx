@@ -14,9 +14,12 @@ import serverFetch, { getErrorMessage } from "@/utils/serverFetch"
 import { useAppSelector } from "@/store"
 import { getAppUser } from "@/store/reducers/user"
 
+export interface BorrowTransactionItemDto extends Omit<BorrowTransactionItem, "returnQuantity"> {
+}
+
 export interface TransactionItemFormProps {
-  value?: BorrowTransactionItem[]
-  onChange?: (value: BorrowTransactionItem[]) => void
+  value?: BorrowTransactionItemDto[]
+  onChange?: (value: BorrowTransactionItemDto[]) => void
 }
 
 export default function TransactionItemForm({ value, onChange }: TransactionItemFormProps) {
@@ -25,7 +28,7 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
   const [size, setSize] = useState('')
   const [sizeOptions, setSizeOptions] = useState<string[]>([])
   const [quantity, setQuantity] = useState<number>(1)
-  const [transactItems, setTransactItems] = useState<BorrowTransactionItem[]>(value || [])
+  const [transactItems, setTransactItems] = useState<BorrowTransactionItemDto[]>(value || [])
   const [errorMessage, setErrorMessage] = useState('')
 
   const maxStock = useMemo(() => {
@@ -95,7 +98,7 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
     showAlertErrorMessage("The item already exists in transaction items.")
   }
 
-  const commitChange = (transactItems: BorrowTransactionItem[]) => {
+  const commitChange = (transactItems: BorrowTransactionItemDto[]) => {
     setTransactItems(transactItems)
     setItem(null)
     setQuantity(1)
@@ -112,7 +115,7 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
 
           if (itemSize) {
             if (quantity <= itemSize.stock) {
-              const transactItem: BorrowTransactionItem = {
+              const transactItem: BorrowTransactionItemDto = {
                 item, quantity, size
               }
               newTransactItems.push(transactItem)
@@ -123,7 +126,7 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
           }
         } else {
           if (quantity <= item.stock) {
-            const transactItem: BorrowTransactionItem = {
+            const transactItem: BorrowTransactionItemDto = {
               item, quantity, size
             }
             newTransactItems.push(transactItem)
@@ -158,6 +161,58 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
       <div className="mb-2 block">
         <Label htmlFor="items" value="Add Items" />
       </div>
+      {transactItems.length > 0 && (
+        <table className="border border-gray-300 mb-5">
+          <thead className="border border-gray-300">
+            <tr>
+              <th className="border border-gray-300 py-1 px-2">Image</th>
+              <th className="border border-gray-300 py-1 px-2">Item</th>
+              <th className="border border-gray-300 py-1 px-2">Size</th>
+              <th className="border border-gray-300 py-1 px-2">Stock</th>
+              <th className="border border-gray-300 py-1 px-2">Quantity</th>
+              <th className="border border-gray-300 py-1 px-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactItems.map((transactItem, i) => (
+              <tr key={i}>
+                <td className="border border-gray-300 py-1 px-2">
+                  <div className="p-2">
+                    <Image src={BASE_ITEMS_IMAGE_URL + transactItem.item.image} alt='' width={50} height={50} />
+                  </div>
+                </td>
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap">
+                  {transactItem.item.name}
+                </td>
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap">
+                  {transactItem.size}
+                </td>
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap">
+                  {
+                    transactItem.item.itemSizes.find(it => it.size == transactItem.size)?.stock || 0
+                  }
+                </td>
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap text-center">
+                  <TextInput
+                    type="number"
+                    min={1}
+                    max={transactItem.item.stock}
+                    value={transactItem.quantity}
+                    onChange={(e) => handleSetQuantity(i, parseInt(e.target.value))}
+                  />
+                </td>
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap align-top">
+                  <FaTimesCircle
+                    size={24}
+                    className="text-red-600 hover:text-red-500"
+                    onClick={() => handleDeleteItem(i)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       <div className="mb-2 block">
         <span className="text-gray-500 text-sm">Note: You can scan the item using QR Code Scanner in the app using the same account.</span>
       </div>
@@ -201,41 +256,6 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
       <div className="my-2">
         <ErrorMessageAlert message={errorMessage} setMessage={setErrorMessage} timeout={5000} />
       </div>
-      {transactItems.map((transactItem, i) => (
-        <div key={i} className="flex flex-row flex-wrap gap-2 mb-2">
-          <div className="p-2">
-            <Image src={BASE_ITEMS_IMAGE_URL + transactItem.item.image} alt='' width={50} height={50} />
-          </div>
-          <div className="text-s flex-1 text-wrap">
-            {transactItem.item.name}
-          </div>
-          <div className="text-s flex-1 text-wrap">
-            {transactItem.size}
-          </div>
-          <div className="text-s w-[80px]">
-            <p>Stock:</p>
-            <p className="font-bold">{
-              transactItem.item.itemSizes.find(it => it.size == transactItem.size)?.stock || 0
-            }</p>
-          </div>
-          <div className="w-[80px]">
-            <TextInput
-              type="number"
-              min={1}
-              max={transactItem.item.stock}
-              value={transactItem.quantity}
-              onChange={(e) => handleSetQuantity(i, parseInt(e.target.value))}
-            />
-          </div>
-          <div className="ml-2">
-            <FaTimesCircle
-              size={24}
-              className="text-red-600 hover:text-red-500"
-              onClick={() => handleDeleteItem(i)}
-            />
-          </div>
-        </div>
-      ))}
     </div>
   );
 }

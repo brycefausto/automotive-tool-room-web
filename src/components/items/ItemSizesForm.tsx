@@ -63,42 +63,20 @@ export default function ItemSizesForm({ value, onChange }: ItemSizesFormProps) {
   return (
     <div>
       <div className="mb-2 block">
-        <Label value="Add Sizes" />
+        <Label value="Item Sizes" />
       </div>
       <div className="flex flex-row gap-2 mb-2">
-        <div className="min-w-[350px]">
+        <div className="min-w-[380px]">
           <Label value="Size" htmlFor="size" />
         </div>
         <div className="max-w-[100px]">
           <Label value="Stock" htmlFor="stock" />
         </div>
       </div>
-      <div className="flex flex-row gap-2 mb-2">
-        <div className="min-w-[350px]">
-          <TextInput id="size" value={size} onChange={(e) => setSize(e.target.value)} />
-        </div>
-        <div className="max-w-[100px]">
-          <TextInput
-            id="stock"
-            type="number"
-            min={0}
-            max={100}
-            value={stock}
-            onChange={(e) => setStock(parseInt(e.target.value))}
-          />
-        </div>
-        <div>
-          <Button onClick={handleAddSize}>
-            Add
-          </Button>
-        </div>
-      </div>
-      <div className="my-2">
-       <ErrorMessageAlert message={errorMessage} setMessage={setErrorMessage} timeout={5000} />
-      </div>
+      <div className="border-t border-gray-300 mb-2"></div>
       {
         itemSizes.map((itemSize, i) => (
-          <div key={i} className="flex flex-row gap-2 mb-2">
+          <div key={i} className="flex flex-row gap-2 border-b border-gray-300 pb-2 mb-2">
             <div className="text-s flex-1 text-wrap">
               {itemSize.size}
             </div>
@@ -120,6 +98,29 @@ export default function ItemSizesForm({ value, onChange }: ItemSizesFormProps) {
           </div>
         ))
       }
+      <div className="flex flex-row gap-2 mt-5 mb-2">
+        <div className="min-w-[350px]">
+          <TextInput id="size" value={size} onChange={(e) => setSize(e.target.value)} />
+        </div>
+        <div className="max-w-[100px]">
+          <TextInput
+            id="stock"
+            type="number"
+            min={0}
+            max={100}
+            value={stock}
+            onChange={(e) => setStock(parseInt(e.target.value))}
+          />
+        </div>
+        <div>
+          <Button onClick={handleAddSize}>
+            Add
+          </Button>
+        </div>
+      </div>
+      <div className="my-2">
+        <ErrorMessageAlert message={errorMessage} setMessage={setErrorMessage} timeout={5000} />
+      </div>
     </div>
   )
 }

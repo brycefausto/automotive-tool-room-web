@@ -1,7 +1,7 @@
-import { Checkbox, Dropdown, Label, Select } from 'flowbite-react'
-import React, { useRef, useState } from 'react'
-
-export const RemarksOptions = ['Not Returned', 'Lost', 'Damaged', 'Broken', 'Other'];
+import { Dropdown, Select } from 'flowbite-react';
+import { useState } from 'react';
+import { TagsInput } from "react-tag-input-component";
+import './TagsInput.css';
 
 export interface RemarksFilterDropdownProps {
   onChangeFilter: (remarksFilter: string) => void,
@@ -11,21 +11,15 @@ export interface RemarksFilterDropdownProps {
 export default function RemarksFilterDropdown({ onChangeFilter, onChangeRemarks }: RemarksFilterDropdownProps) {
   const [remarksFilter, setRemarksFilter] = useState('All');
   const [remarks, setRemarks] = useState<string[]>([]);
-  
+
   const handleOnChangeFilter = (value: string) => {
     setRemarksFilter(value);
     onChangeFilter(value);
   }
 
-  const handleToggleCheck = (checked: boolean, remarksName: string) => {
-    if (checked && !remarks.includes(remarksName)) {
-      remarks.push(remarksName);
-    } else if (!checked && remarks.includes(remarksName)) {
-      remarks.splice(remarks.indexOf(remarksName), 1);
-    }
-    console.log({ remarks });
-    setRemarks([...remarks]);
-    onChangeRemarks(remarks);
+  const handleOnChangeRemarks = (values: string[]) => {
+    setRemarks([...values]);
+    onChangeRemarks(values);
   }
 
   return (
@@ -39,12 +33,14 @@ export default function RemarksFilterDropdown({ onChangeFilter, onChangeRemarks 
           </Select>
           {remarksFilter == 'With Remarks' && (
             <div className="mt-5">
-              {RemarksOptions.map((remarkOption, i) => (
-                <div key={i} className="my-2 flex items-center gap-2">
-                  <Checkbox id={`chkBox${i}`} defaultChecked={remarks.includes(remarkOption)} onChange={(e) => handleToggleCheck(e.target.checked, remarkOption)} />
-                  <Label htmlFor={`chkBox${i}`}>{remarkOption}</Label>
-                </div>
-              ))}
+              <TagsInput
+                placeHolder="Search remark/s"
+                value={remarks}
+                onChange={(value) => handleOnChangeRemarks(value)}
+                classNames={{
+                  input: "tag-input"
+                }}
+              />
             </div>
           )}
         </div>

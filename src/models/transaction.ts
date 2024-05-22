@@ -17,6 +17,7 @@ export type FillStatus = 'High' | 'Medium' | 'Low';
 export interface BorrowTransactionItem {
   item: Item,
   quantity: number,
+  returnQuantity: number,
   size?: string,
   fillStatus?: FillStatus,
   remarks?: string

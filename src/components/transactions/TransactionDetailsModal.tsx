@@ -51,26 +51,28 @@ export default function TransactionDetailsModal({ show, setShow, onClose, transa
         </div>
         <div>
           <p><span className="font-bold">Items:</span></p>
-          <table className="w-[100%] text-left">
-            <thead>
+          <table className="w-[100%] text-left border border-gray-500">
+            <thead className="border border-gray-500">
               <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Fill Status</th>
-                <th>Remarks</th>
+                <th className="border border-gray-500 px-1">Name</th>
+                <th className="border border-gray-500 px-1">Category</th>
+                <th className="border border-gray-500 px-1">Size</th>
+                <th className="border border-gray-500 px-1">Qty</th>
+                <th className="border border-gray-500 px-1">Remaining Qty</th>
+                <th className="border border-gray-500 px-1">Fill Status</th>
+                <th className="border border-gray-500 px-1">Remarks</th>
               </tr>
             </thead>
             <tbody>
               {transaction.items.map((item, i) => (
-                <tr key={i}>
-                  <td>{item.item.name}</td>
-                  <td>{item.item.category}</td>
-                  <td>{item.size}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.fillStatus}</td>
-                  <td>{item.remarks}</td>
+                <tr key={i} className="border border-gray-500">
+                  <td className="border border-gray-500 px-1">{item.item.name}</td>
+                  <td className="border border-gray-500 px-1">{item.item.category}</td>
+                  <td className="border border-gray-500 px-1">{item.size}</td>
+                  <td className="border border-gray-500 px-1 text-center">{item.quantity}</td>
+                  <td className="border border-gray-500 px-1 text-center">{item.returnQuantity}</td>
+                  <td className="border border-gray-500 px-1">{item.fillStatus}</td>
+                  <td className="border border-gray-500 px-1">{item.remarks}</td>
                 </tr>
               ))}
             </tbody>
