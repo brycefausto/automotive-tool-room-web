@@ -17,7 +17,7 @@ export default function NotificationBell() {
   const [show, setShow] = useState(false)
   const appNotifications = useAppSelector(getNotifications)
   const dispatch = useAppDispatch()
-  const divRef = useRef<HTMLDivElement | null>(null)
+  const divRef = useRef<any>(null)
 
   const handleClickOutside = (event: MouseEvent) => {
     if (divRef.current && !divRef.current.contains(event.target as any)) {
