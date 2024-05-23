@@ -142,7 +142,7 @@ export default function ChatMessagesBox({ appUser, chat, setSelectedChat }: Chat
                 <Loader loading={topLoading}></Loader>
               </div>
               <ChatMessagesList appUser={appUser} messages={messages} />
-              <div ref={(ref) => messageBoxRef.current = ref}></div>
+              <div ref={messageBoxRef}></div>
             </div>
           </Loader>
         )}
