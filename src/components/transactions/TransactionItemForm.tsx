@@ -187,12 +187,12 @@ export default function TransactionItemForm({ value, onChange }: TransactionItem
                 <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap">
                   {transactItem.size}
                 </td>
-                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap">
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap text-center">
                   {
                     transactItem.item.itemSizes.find(it => it.size == transactItem.size)?.stock || 0
                   }
                 </td>
-                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap text-center">
+                <td className="border border-gray-300 py-1 px-2 text-s flex-1 text-wrap">
                   <TextInput
                     type="number"
                     min={1}
