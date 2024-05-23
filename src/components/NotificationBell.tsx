@@ -92,7 +92,7 @@ export default function NotificationBell() {
   )
 
   return (
-    <div className="mr-5" ref={(ref) => divRef.current = ref}>
+    <div className="mr-5" ref={divRef}>
       <Button color="light" className="mr-5" onClick={toggleShow}>
         <HiOutlineBell size={24} />
         {appNotifications.length > 0 && (
