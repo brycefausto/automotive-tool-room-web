@@ -2,7 +2,7 @@ import { BorrowTransaction, BorrowTransactionStatus } from '@/models/transaction
 import { useAppSelector } from '@/store'
 import { getAppUser } from '@/store/reducers/user'
 import serverFetch, { getErrorMessage } from '@/utils/serverFetch'
-import { Button, Table } from 'flowbite-react'
+import { Button, Table, Tooltip } from 'flowbite-react'
 import React from 'react'
 import { FaCalendarCheck, FaCheckCircle } from "react-icons/fa"
 import { MdAssignmentReturned, MdAssignmentLate } from "react-icons/md"
@@ -10,6 +10,7 @@ import DetailsButton from '../buttons/DetailsButton'
 import TransactionItemList from './TransactionItemList'
 import { useAlertModal } from '@/providers/AlertModalProvider'
 import EditButton from '../buttons/EditButton'
+import { BiReceipt } from "react-icons/bi";
 
 export interface TransactionListItemProps {
     transaction: BorrowTransaction
@@ -33,6 +34,16 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
                 return <MdAssignmentReturned size={24} color="blue" />
             case BorrowTransactionStatus.NOT_RETURNED:
                 return <MdAssignmentLate size={24} color="red" />
+        }
+    }
+
+    const handleGenerateBorrowSlipReport = async (id: string) => {
+        try {
+            let url = `/transactions/generateBorrowersSlip/${id}`
+            await serverFetch.post(url)
+            window.open(`/transactions/borrowersSlip`, '_blank', 'noopener,noreferrer')
+        } catch (error: any) {
+            alert(error.message)
         }
     }
 
@@ -61,9 +72,14 @@ export default function TransactionListItem({ transaction, onClickDetails, onCli
         <React.Fragment>
             <tr className="border-b border-gray-800 border-t-2">
                 <td className="px-6 py-4 border border-gray-400 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    <span>{transaction.borrowedAtString || transaction.createdAtString}</span>
-                    <div className="float-right">
+                    <span className="flex">{transaction.borrowedAtString || transaction.createdAtString}</span>
+                    <div className="inline-block mr-2">
                         <DetailsButton onClick={() => onClickDetails(transaction)} />
+                    </div>
+                    <div className="inline-block" onClick={() => handleGenerateBorrowSlipReport(transaction._id)}>
+                        <Tooltip content="Generate Borrower's Slip">
+                            <BiReceipt size={26} className="text-slate-700 hover:text-slate-800" />
+                        </Tooltip>
                     </div>
                 </td>
                 <td className="px-6 py-4 border border-gray-400">
