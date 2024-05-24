@@ -4,13 +4,14 @@ import { getStoredToken } from '@/store/reducers/messaging';
 import { getAppUser } from '@/store/reducers/user';
 import { clearStorageItem } from '@/utils';
 import serverFetch from '@/utils/serverFetch';
-import { Avatar, Button, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
+import { Avatar, Button, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarToggle, Tooltip } from 'flowbite-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import NotificationBell from './NotificationBell';
+import { MdGetApp } from "react-icons/md";
 import MessagingComponent from './MessagingComponent';
+import NotificationBell from './NotificationBell';
 
 export default function AppNavbar() {
   const router = useRouter()
@@ -40,6 +41,21 @@ export default function AppNavbar() {
           Test Notif
         </Button> */}
         <NotificationBell />
+        <div className="mr-5">
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Tooltip content="Download App QR Code">
+                <Button as="div" color="gray">
+                  <MdGetApp />
+                </Button>
+              </Tooltip>
+            }
+          >
+            <Image src='/APK_QR_CODE.png' alt='' width={300} height={300} />
+          </Dropdown>
+        </div>
         {loaded && (
           <>
             {user.loggedIn && (
