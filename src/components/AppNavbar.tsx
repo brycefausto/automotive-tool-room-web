@@ -12,11 +12,13 @@ import { useEffect, useState } from 'react';
 import { MdGetApp } from "react-icons/md";
 import MessagingComponent from './MessagingComponent';
 import NotificationBell from './NotificationBell';
+import APKQRCodeModal from './APKQRCodeModal';
 
 export default function AppNavbar() {
   const router = useRouter()
   const user = useAppSelector(getAppUser)
   const [loaded, setLoaded] = useState(false);
+  const [apkDialogShow, setApkDialogShow] = useState(false);
   const storedToken = useAppSelector(getStoredToken)
 
   useEffect(() => {
@@ -35,27 +37,19 @@ export default function AppNavbar() {
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Automotive Tool Room Management</span>
       </NavbarBrand>
       <div className="flex md:order-2">
+        <div className="mr-5">
+          <Button onClick={() => setApkDialogShow(!apkDialogShow)}>
+            <MdGetApp className="mr-2" />
+            Download App
+          </Button>
+          <APKQRCodeModal show={apkDialogShow} setShow={setApkDialogShow} />
+        </div>
         {/* <Button className="mx-2" onClick={async () => {
           await serverFetch.post(`/messaging/testMessage`);
         }}>
           Test Notif
         </Button> */}
         <NotificationBell />
-        <div className="mr-5">
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-              <Tooltip content="Download App QR Code">
-                <Button as="div" color="gray">
-                  <MdGetApp />
-                </Button>
-              </Tooltip>
-            }
-          >
-            <Image src='/APK_QR_CODE.png' alt='' width={300} height={300} />
-          </Dropdown>
-        </div>
         {loaded && (
           <>
             {user.loggedIn && (

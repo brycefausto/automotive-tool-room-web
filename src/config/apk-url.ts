@@ -1,0 +1,1 @@
+export const APK_URL = process.env.NEXT_PUBLIC_APK_URL || ''
