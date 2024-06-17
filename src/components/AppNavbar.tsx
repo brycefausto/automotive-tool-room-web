@@ -4,17 +4,21 @@ import { getStoredToken } from '@/store/reducers/messaging';
 import { getAppUser } from '@/store/reducers/user';
 import { clearStorageItem } from '@/utils';
 import serverFetch from '@/utils/serverFetch';
-import { Avatar, Button, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarToggle, Tooltip } from 'flowbite-react';
-import Image from 'next/image';
+import { Avatar, Button, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { MdGetApp } from "react-icons/md";
+import APKQRCodeModal from './APKQRCodeModal';
 import MessagingComponent from './MessagingComponent';
 import NotificationBell from './NotificationBell';
-import APKQRCodeModal from './APKQRCodeModal';
+import Image from 'next/image';
 
-export default function AppNavbar() {
+export interface AppNavbarProps {
+  onToggleSidebar: () => void
+}
+
+export default function AppNavbar({ onToggleSidebar }: AppNavbarProps) {
   const router = useRouter()
   const user = useAppSelector(getAppUser)
   const [loaded, setLoaded] = useState(false);
@@ -32,12 +36,25 @@ export default function AppNavbar() {
   }
   return (
     <Navbar fluid rounded className="bg-slate-100">
+      <button
+        data-drawer-target="app-sidebar"
+        data-drawer-toggle="app-sidebar"
+        aria-controls="app-sidebar"
+        type="button"
+        className="inline-flex items-center p-2 mt-2 mb-2 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        onClick={() => onToggleSidebar()}
+        >
+        <span className="sr-only">Open sidebar</span>
+        <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+        </svg>
+      </button>
       <NavbarBrand as={Link} href="/">
-        <Image src="/Automotive Logo.png" className="mr-3 md:hidden lg:hidden sm:h-20" alt="App Logo" width={20} height={20} />
+        <Image src="/Automotive Logo.png" className="mr-3 lg:hidden" alt="App Logo" width={40} height={40} />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Automotive Tool Room Management</span>
       </NavbarBrand>
-      <div className="flex md:order-2">
-        <div className="mr-5">
+      <div className="flex flex-auto md:order-2 justify-end">
+        <div className="mr-2">
           <Button onClick={() => setApkDialogShow(!apkDialogShow)}>
             <MdGetApp className="mr-2" />
             Download App
@@ -80,16 +97,7 @@ export default function AppNavbar() {
             Log out
           </Dropdown.Item>
         </Dropdown>
-        <NavbarToggle />
       </div>
-      <NavbarCollapse>
-        {/* <NavbarLink href="#" active>
-          Home
-        </NavbarLink>
-        <NavbarLink as={Link} href="#">
-          About
-        </NavbarLink> */}
-      </NavbarCollapse>
     </Navbar>
   );
 }

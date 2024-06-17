@@ -92,8 +92,8 @@ export default function NotificationBell() {
   )
 
   return (
-    <div className="mr-5" ref={divRef}>
-      <Button color="light" className="mr-5" onClick={toggleShow}>
+    <div className="mr-2" ref={divRef}>
+      <Button color="light" className="mr-2" onClick={toggleShow}>
         <HiOutlineBell size={24} />
         {appNotifications.length > 0 && (
           <Badge className="absolute top-0 left-10 rounded-full">{appNotifications.length}</Badge>

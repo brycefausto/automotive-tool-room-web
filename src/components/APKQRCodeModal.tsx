@@ -16,6 +16,7 @@ export default function APKQRCodeModal({ show, setShow }: APKQRCodeModalProps) {
   const handleDownload = () => {
     downloadElement("qrCode", "APK_QR_CODE")
   }
+  
   return (
     <Modal show={show} onClose={() => setShow(false)}>
       <Modal.Header>
