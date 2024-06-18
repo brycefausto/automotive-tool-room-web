@@ -13,8 +13,8 @@ import SubjectBorrowCountChart from "./charts/SubjectBorrowCountChart";
 
 export default function HomeComponent() {
   return (
-    <div className="flex flex-row w-full overflow-x-scroll">
-      <div className="flex flex-col gap-5 basis-1/2 items-center">
+    <div className="flex flex-row w-full overflow-x-auto">
+      <div className="flex flex-col gap-5 basis-1/2 items-center p-3">
         <h4>Manage Data</h4>
         <div className="flex flex-col gap-5 min-w-[300px]">
           <LinkButton href="/items"><HiListBullet className="mr-2" size={24} />Items</LinkButton>
@@ -27,7 +27,7 @@ export default function HomeComponent() {
         <DepartmentBorrowCountChart />
         <SubjectBorrowCountChart />
       </div>
-      <div className="flex flex-col gap-5 basis-1/2">
+      <div className="flex flex-col gap-5 basis-1/2 p-3">
         <ItemCountChart />
         <ItemBorrowCountChart />
         <DepartmentLostCountChart />

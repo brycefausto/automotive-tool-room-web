@@ -105,7 +105,7 @@ export default function NotificationBell() {
           className="z-10 w-fit rounded divide-y divide-gray-100 shadow focus:outline-none transition-opacity duration-100 border border-gray-200 bg-white text-gray-900 dark:border-none dark:bg-gray-700 dark:text-white mr-5"
           role="menu"
           aria-orientation="vertical"
-          style={{ position: 'absolute', left: 0, top: 0, minWidth: '60px', transform: 'translate(1327px, 64px)' }}
+          style={{ position: 'absolute', right: 28, top: 65, minWidth: '60px' }}
         >
           {appNotifications.length > 0 ? (
             <>
