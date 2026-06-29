@@ -3,6 +3,7 @@
 
 import AppNavbar from '@/components/AppNavbar';
 import AppSideBar from '@/components/AppSideBar';
+import { TrialBanner } from '@/components/trial/TrialBanner';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
 export const DashboardLayout = ({ children }: PropsWithChildren) => {
@@ -37,6 +38,7 @@ export const DashboardLayout = ({ children }: PropsWithChildren) => {
             <AppSideBar show={showSidebar} />
             <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
                 <AppNavbar onToggleSidebar={toggleSidebar} />
+                <TrialBanner />
                 <main>
                     <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
                         {children}

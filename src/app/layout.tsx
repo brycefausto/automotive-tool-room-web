@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
+import TrialWrapper from "@/components/trial/TrialWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +24,11 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={inter.className}>
-        <AppProvider>
-          {children}
-        </AppProvider>
+        <TrialWrapper>
+          <AppProvider>
+            {children}
+          </AppProvider>
+        </TrialWrapper>
       </body>
     </html>
   );
