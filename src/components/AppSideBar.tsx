@@ -9,7 +9,7 @@ import { FaPrescriptionBottle, FaRegListAlt, FaTools } from "react-icons/fa";
 import { HiChartPie, HiUser } from 'react-icons/hi';
 import { HiListBullet } from "react-icons/hi2";
 import { IoMdChatbubbles } from "react-icons/io";
-import { MdSubject } from "react-icons/md";
+import { MdAccountCircle, MdSubject } from "react-icons/md";
 import { RiOrganizationChart } from "react-icons/ri";
 import { SiGoogleclassroom } from "react-icons/si";
 
@@ -74,6 +74,9 @@ export default function AppSideBar({ show }: AppSideBarProps) {
               </LinkSidebarItem>
               <LinkSidebarItem href="/chat" icon={IoMdChatbubbles}>
                 Chat
+              </LinkSidebarItem>
+              <LinkSidebarItem href="/profile" icon={MdAccountCircle}>
+                Profile
               </LinkSidebarItem>
             </Sidebar.ItemGroup>
           </Sidebar.Items>

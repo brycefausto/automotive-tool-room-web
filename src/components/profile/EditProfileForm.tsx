@@ -1,26 +1,25 @@
 'use client'
 
-import { Department } from "@/models/department"
-import { Section } from "@/models/section"
-import { Subject } from "@/models/subject"
-import { AppUser, UserRole, UserRoleOptions } from "@/models/user"
-import { useAppDispatch, useAppSelector } from "@/store"
-import { getAppUser } from "@/store/reducers/user"
-import { PropsWithData } from "@/types"
-import serverFetch, { getErrorMessage } from "@/utils/serverFetch"
-import { capitalizeWords } from "@/utils/stringUtils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Label, Spinner } from 'flowbite-react'
-import { useRef, useState } from "react"
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { z } from 'zod'
-import DepartmentsDropdown from "../dropdowns/DepartmentsDropdown"
-import SectionsDropdown from "../dropdowns/SectionsDropdown"
-import SubjectsDropdown from "../dropdowns/SubjectsDropdown"
-import FormInput from '../forms/FormInput'
-import FormSelect from "../forms/FormSelect"
-import ChangePasswordModal from "./ChangePasswordModal"
-import { useRouter } from "next/navigation"
+import { Department } from "@/models/department";
+import { Section } from "@/models/section";
+import { Subject } from "@/models/subject";
+import { UserRole, UserRoleOptions } from "@/models/user";
+import { useAppSelector } from "@/store";
+import { getAppUser } from "@/store/reducers/user";
+import serverFetch, { getErrorMessage } from "@/utils/serverFetch";
+import { capitalizeWords } from "@/utils/stringUtils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Label, Spinner } from 'flowbite-react';
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import DepartmentsDropdown from "../dropdowns/DepartmentsDropdown";
+import SectionsDropdown from "../dropdowns/SectionsDropdown";
+import SubjectsDropdown from "../dropdowns/SubjectsDropdown";
+import FormInput from '../forms/FormInput';
+import FormSelect from "../forms/FormSelect";
+import ChangePasswordModal from "../users/ChangePasswordModal";
 
 const validationSchema = z.object({
   username: z.string().min(3).max(30)
@@ -37,16 +36,14 @@ const validationSchema = z.object({
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-export default function EditUserForm({ data }: PropsWithData<AppUser>) {
-  const dispatch = useAppDispatch()
+export default function EditProfileForm() {
   const router = useRouter()
   const appUser = useAppSelector(getAppUser)
-  const editingUser = data
   const [loading, setLoading] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
-  const sectionRef = useRef<Section | undefined>(editingUser?.section)
-  const subjectsRef = useRef<Subject[]>(editingUser && editingUser.subjects ? editingUser.subjects : [])
-  const [department, setDepartment] = useState<Department | undefined>(editingUser.department)
+  const sectionRef = useRef<Section | undefined>(appUser?.section)
+  const subjectsRef = useRef<Subject[]>(appUser && appUser.subjects ? appUser.subjects : [])
+  const [department, setDepartment] = useState<Department | undefined>(appUser.department)
 
   const {
     control,
@@ -55,13 +52,13 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
     formState: { errors },
   } = useForm<ValidationSchema>({
     defaultValues: {
-      username: editingUser?.username || '',
-      email: editingUser?.email || '',
-      name: editingUser?.name || '',
-      idNumber: editingUser?.idNumber || '',
-      role: editingUser?.role || UserRole.STUDENT,
-      phone: editingUser?.phone || '',
-      address: editingUser?.address || '',
+      username: appUser?.username || '',
+      email: appUser?.email || '',
+      name: appUser?.name || '',
+      idNumber: appUser?.idNumber || '',
+      role: appUser?.role || UserRole.STUDENT,
+      phone: appUser?.phone || '',
+      address: appUser?.address || '',
     },
     resolver: zodResolver(validationSchema),
   });
@@ -75,7 +72,7 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
     data.departmentId = department?._id
 
     try {
-      await serverFetch.put(`/users/${editingUser?._id}`, data)
+      await serverFetch.put(`/users/${appUser?._id}`, data)
       router.push("/users")
 
       alert("Successfully saved data")
@@ -108,7 +105,7 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
       <form className="flex max-w-md flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="username" value="Username" />
+            <Label htmlFor="username" value="Your username" />
           </div>
           <FormInput name="username" control={control} id="username" type="text" required shadow />
           {errors.username && (
@@ -119,7 +116,7 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="email2" value="Email" />
+            <Label htmlFor="email2" value="Your email" />
           </div>
           <FormInput name="email" control={control} id="email2" type="email" required shadow />
           {errors.email && (
@@ -217,12 +214,10 @@ export default function EditUserForm({ data }: PropsWithData<AppUser>) {
         {loading ? (
           <Spinner size="xl" />
         ) : (
-          <Button type="submit">Update user</Button>
+          <Button type="submit">Update profile</Button>
         )}
       </form>
-      {editingUser && (
-        <ChangePasswordModal adminId={appUser._id} userId={editingUser._id} show={showPasswordModal} setShow={setShowPasswordModal} />
-      )}
+      <ChangePasswordModal adminId={appUser._id} userId={appUser._id} show={showPasswordModal} setShow={setShowPasswordModal} />
     </>
   );
 }
